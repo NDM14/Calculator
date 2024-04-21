@@ -16,44 +16,29 @@
         android:id="@+id/term"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeStepGranularity="2sp"
         android:layout_weight="1"
         android:text=""
-        android:textSize="50sp"
+        android:maxLines="1"
         android:textColor="@color/white"
         android:textAlignment="textStart"
         android:paddingStart="15sp"/>
 
-    <TextView
-        android:id="@+id/history"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:paddingStart="15sp"
-        android:textAlignment="textStart"
-        android:text=""
-        android:textSize="30sp"
-        android:textColor="@color/white"/>
+        android:id="@+id/historyScrollView">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/historyLinearLayout"/>
 
-    <LinearLayout
-        style="@style/buttonRow">
-
-        <Button
-            android:id="@+id/exportHistory"
-            style="@style/buttonOperator"
-            android:text="Export History"
-            android:layout_weight="2"/>
-
-        <Button
-            android:id="@+id/buttonOpenBracket"
-            style="@style/buttonOperator"
-            android:text="("/>
-
-        <Button
-            android:id="@+id/buttonCloseBracket"
-            style="@style/buttonOperator"
-            android:text=")"/>
-
-    </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         style="@style/buttonRow">
@@ -140,6 +125,26 @@
             android:id="@+id/buttonAdd"
             style="@style/buttonOperator"
             android:text="+" />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/buttonRow">
+
+        <Button
+            android:id="@+id/exportHistory"
+            style="@style/buttonOperator"
+            android:text="Export History"
+            android:layout_weight="2"/>
+
+        <Button
+            android:id="@+id/buttonOpenBracket"
+            style="@style/buttonOperator"
+            android:text="("/>
+
+        <Button
+            android:id="@+id/buttonCloseBracket"
+            style="@style/buttonOperator"
+            android:text=")"/>
+
     </LinearLayout>
 
 </LinearLayout>

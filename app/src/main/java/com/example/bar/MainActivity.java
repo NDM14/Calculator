@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,10 +21,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.AutoSizeableTextView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -58,12 +65,16 @@ public class MainActivity extends AppCompatActivity {
     private double result;
     private String resultString;
     private String fullEquation;
-    private TextView historyView;
+    //private TextView historyView;
+    private ScrollView histeryScrollView;
+
+    private char[] symbolList;
 
     private final LinkedList<String> history = new LinkedList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //TODO Remove-Button, RemoveAll-Button, Minus-Button, Punkt-Button
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -76,167 +87,55 @@ public class MainActivity extends AppCompatActivity {
 
         termView = findViewById(R.id.term);
 
-        button1 = findViewById(R.id.button1);
+        histeryScrollView = findViewById(R.id.historyScrollView);
 
-        historyView = findViewById(R.id.history);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 1");
-                term += '1';
-                termView.setText(term);
-            }
-        });
+        button1 = findViewById(R.id.button1);
+        addTermStringToView(button1, '1');
 
         button2 = findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 2");
-                term += '2';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button2, '2');
 
         button3 = findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 3");
-                term += '3';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button3, '3');
 
         button4 = findViewById(R.id.button4);
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 4");
-                term += '4';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button4, '4');
 
         button5 = findViewById(R.id.button5);
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 5");
-                term += '5';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button5, '5');
 
         button6 = findViewById(R.id.button6);
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 6");
-                term += '6';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button6, '6');
 
         button7 = findViewById(R.id.button7);
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 7");
-                term += '7';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button7, '7');
 
         button8 = findViewById(R.id.button8);
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 8");
-                term += '8';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button8, '8');
 
         button9 = findViewById(R.id.button9);
-        button9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 9");
-                term += '9';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button9, '9');
 
         buttonAdd = findViewById(R.id.buttonAdd);
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked +");
-                term += '+';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonAdd, '+');
 
         buttonSubtract = findViewById(R.id.buttonSubtract);
-        buttonSubtract.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked -");
-                term += '-';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonSubtract, '-');
 
         buttonMultiply = findViewById(R.id.buttonMultiply);
-        buttonMultiply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked *");
-                term += '*';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonMultiply, '*');
 
         buttonDivide = findViewById(R.id.buttonDivide);
-        buttonDivide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked /");
-                term += '/';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonDivide, '/');
 
         buttonOpenBracket = findViewById(R.id.buttonOpenBracket);
-        buttonOpenBracket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked (");
-                term += '(';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonOpenBracket, '(');
 
         buttonCloseBracket = findViewById(R.id.buttonCloseBracket);
-        buttonCloseBracket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked )");
-                term += ')';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(buttonCloseBracket, ')');
 
         button0 = findViewById(R.id.button0);
-        button0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked 0");
-                term += '0';
-                termView.setText(term);
-            }
-        });
+        addTermStringToView(button0, '0');
 
         exportHistory = findViewById(R.id.exportHistory);
         exportHistory.setOnClickListener(new View.OnClickListener() {
@@ -257,37 +156,61 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fullEquation = term + " = ";
                 try {
-                    result = eval(term);
-                    resultString = String.format("%f", result);
-                    if(resultString.equals("Infinity")) {
+                    if (term.contains("0/0")){
+                        resultString = "division by 0";
                         fullEquation += "division by 0";
-                        resultString = "";
-                        Toast.makeText(MainActivity.this, "division by 0",
+                        Toast.makeText(MainActivity.this, resultString,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        fullEquation += resultString;
+                        result = eval(term);
+                        resultString = String.format("%f", result);
+                        if(resultString.equals("Infinity")) {
+                            resultString = "division by 0";
+                            fullEquation += "division by 0";
+                            Toast.makeText(MainActivity.this, resultString,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            fullEquation += resultString;
+                        }
                     }
                 } catch(RuntimeException e) {
                     fullEquation += "invalid term";
-                    resultString = "";
+                    resultString = "invalid term";
                     Toast.makeText(MainActivity.this, "invalid term",
                             Toast.LENGTH_SHORT).show();
                 } finally {
-
-                    if(history.size() < 1) {
-                        historyView.setText("");
-                    } else {
-                        String last5History = last5historyToString(history);
-                        historyView.setText(last5History);
-                    }
-                    history.addFirst(fullEquation);Log.i(TAG, "clicked show history");
+                    history.addFirst(fullEquation);
+                    Log.i(TAG, "clicked show history");
                 }
+
+                addTextViewToScrollView(fullEquation);
                 termView.setText(resultString);
                 term = "";
             }
         });
     }
 
+    private void addTextViewToScrollView(String text) {
+        LinearLayout linearLayout = findViewById(R.id.historyLinearLayout);
+
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextSize(50);
+        textView.setPadding(20,0,0,0);
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        linearLayout.addView(textView, 0);
+    }
+    private void addTermStringToView(Button button, Character symbol) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, String.format("clicked %s", symbol));
+                term += symbol;
+                termView.setText(term);
+            }
+        });
+
+    }
     private void exportHistoryToFile(LinkedList<String> history) {
         try {
             String filename = "history_" + new Date().toString().replace(" ", "-").toLowerCase() + ".txt";
@@ -321,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 out.println(s);
             }
             out.close();
+            Log.i(TAG, "History is written to media store");
         } catch (IOException e) {
             Log.i(TAG, "Failed to export history:\n" + e);
         }
