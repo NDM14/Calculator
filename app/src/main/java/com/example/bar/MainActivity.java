@@ -1,6 +1,12 @@
 package com.example.bar;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
@@ -15,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Iterator;
 
@@ -51,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private String resultString;
     private String fullEquation;
 
-    private LinkedList history = new LinkedList<String>();
+    private final LinkedList<String> history = new LinkedList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -323,13 +331,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String last5historyToString(LinkedList<String> history) {
-        String s = history.getFirst();
-        for(int i = 1; i < 5; i++) {
-            s += "\n";
-            s += history.get(i);
+        StringBuilder builder = new StringBuilder(history.getFirst());
+        for (String s : history.subList(1, Math.min(5, history.size()))) {
+            builder.append("\n").append(s);
         }
-        Log.i(TAG, "Last 5 history: " + s);
-        return s;
+        Log.i(TAG, "Last 5 history: " + builder);
+        return builder.toString();
     }
 
     // We have taken the implementation of the eval function from this post:
