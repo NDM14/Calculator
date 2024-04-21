@@ -285,24 +285,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exportHistoryToFile(LinkedList<String> history) {
-        Log.i(TAG, "dir: " + getApplicationInfo().dataDir);
-        File historyFile = new File(getApplicationInfo().dataDir + "/history.txt");
         try {
-            historyFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            String filename = "history_" + new Date().toString().replace(" ", "-").toLowerCase() + ".txt";
 
-        try {
-            PrintWriter out = new PrintWriter(getApplicationInfo().dataDir + "/history.txt");
-            Iterator<String> historyIterator = history.iterator();
-            while(historyIterator.hasNext()) {
-                out.println(historyIterator.next());
-                //out.println("\n");
+            // construct file metadata
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+            // request to write the file to the media store
+            ContentResolver resolver = this.getContentResolver();
+            Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+
+            if (uri == null) {
+                Log.i(TAG, "Failed to obtain an uri to write to");
+                return;
+            }
+
+            OutputStream outputStream = resolver.openOutputStream(uri);
+
+            if (outputStream == null) {
+                Log.i(TAG, "Failed to obtain an output stream to write to");
+                return;
+            }
+
+            Log.i(TAG, "Writing history to media store");
+
+            PrintWriter out = new PrintWriter(outputStream);
+            for (String s : history) {
+                out.println(s);
             }
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.i(TAG, "Failed to export history:\n" + e);
         }
     }
 
