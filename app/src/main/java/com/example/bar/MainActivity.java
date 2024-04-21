@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private double result;
     private String resultString;
     private String fullEquation;
+    private TextView historyView;
 
     private final LinkedList<String> history = new LinkedList<String>();
 
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         termView = findViewById(R.id.term);
 
         button1 = findViewById(R.id.button1);
+
+        historyView = findViewById(R.id.history);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,20 +238,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        showHistory = findViewById(R.id.showHistory);
-        showHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked show history");
-                if(history.size() < 1) {
-                    termView.setText("");
-                } else {
-                    String last5History = last5historyToString(history);
-                    termView.setText(last5History);
-                }
-            }
-        });
-
         exportHistory = findViewById(R.id.exportHistory);
         exportHistory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,7 +273,14 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "invalid term",
                             Toast.LENGTH_SHORT).show();
                 } finally {
-                    history.addFirst(fullEquation);
+
+                    if(history.size() < 1) {
+                        historyView.setText("");
+                    } else {
+                        String last5History = last5historyToString(history);
+                        historyView.setText(last5History);
+                    }
+                    history.addFirst(fullEquation);Log.i(TAG, "clicked show history");
                 }
                 termView.setText(resultString);
                 term = "";
