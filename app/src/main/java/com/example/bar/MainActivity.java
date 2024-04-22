@@ -3,7 +3,6 @@ package com.example.bar;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,60 +19,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.widget.AutoSizeableTextView;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Iterator;
-
 import java.io.PrintWriter;
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
     final private String TAG = MainActivity.class.getCanonicalName();
 
-    private Button button1;
-    private Button button2;
-    private Button button3;
-    private Button button4;
-    private Button button5;
-    private Button button6;
-    private Button button7;
-    private Button button8;
-    private Button button9;
-    private Button buttonAdd;
-    private Button buttonSubtract;
-    private Button buttonMultiply;
-    private Button buttonDivide;
-    private Button buttonOpenBracket;
-    private Button buttonCloseBracket;
-    private Button buttonEquals;
-    private Button button0;
-    private Button showHistory;
-    private Button exportHistory;
     private TextView termView;
-
     private String term = "";
     private double result;
     private String resultString;
     private String fullEquation;
-    //private TextView historyView;
-    private ScrollView histeryScrollView;
-
-    private char[] symbolList;
-
-    private final LinkedList<String> history = new LinkedList<String>();
+    private final LinkedList<String> history = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO Remove-Button, RemoveAll-Button, Minus-Button, Punkt-Button
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -87,57 +50,56 @@ public class MainActivity extends AppCompatActivity {
 
         termView = findViewById(R.id.term);
 
-        histeryScrollView = findViewById(R.id.historyScrollView);
-
-        button1 = findViewById(R.id.button1);
+        //Initializing all Buttons, that just add a symbol to the term
+        Button button1 = findViewById(R.id.button1);
         addTermStringToView(button1, '1');
 
-        button2 = findViewById(R.id.button2);
+        Button button2 = findViewById(R.id.button2);
         addTermStringToView(button2, '2');
 
-        button3 = findViewById(R.id.button3);
+        Button button3 = findViewById(R.id.button3);
         addTermStringToView(button3, '3');
 
-        button4 = findViewById(R.id.button4);
+        Button button4 = findViewById(R.id.button4);
         addTermStringToView(button4, '4');
 
-        button5 = findViewById(R.id.button5);
+        Button button5 = findViewById(R.id.button5);
         addTermStringToView(button5, '5');
 
-        button6 = findViewById(R.id.button6);
+        Button button6 = findViewById(R.id.button6);
         addTermStringToView(button6, '6');
 
-        button7 = findViewById(R.id.button7);
+        Button button7 = findViewById(R.id.button7);
         addTermStringToView(button7, '7');
 
-        button8 = findViewById(R.id.button8);
+        Button button8 = findViewById(R.id.button8);
         addTermStringToView(button8, '8');
 
-        button9 = findViewById(R.id.button9);
+        Button button9 = findViewById(R.id.button9);
         addTermStringToView(button9, '9');
 
-        buttonAdd = findViewById(R.id.buttonAdd);
+        Button buttonAdd = findViewById(R.id.buttonAdd);
         addTermStringToView(buttonAdd, '+');
 
-        buttonSubtract = findViewById(R.id.buttonSubtract);
+        Button buttonSubtract = findViewById(R.id.buttonSubtract);
         addTermStringToView(buttonSubtract, '-');
 
-        buttonMultiply = findViewById(R.id.buttonMultiply);
+        Button buttonMultiply = findViewById(R.id.buttonMultiply);
         addTermStringToView(buttonMultiply, '*');
 
-        buttonDivide = findViewById(R.id.buttonDivide);
+        Button buttonDivide = findViewById(R.id.buttonDivide);
         addTermStringToView(buttonDivide, '/');
 
-        buttonOpenBracket = findViewById(R.id.buttonOpenBracket);
+        Button buttonOpenBracket = findViewById(R.id.buttonOpenBracket);
         addTermStringToView(buttonOpenBracket, '(');
 
-        buttonCloseBracket = findViewById(R.id.buttonCloseBracket);
+        Button buttonCloseBracket = findViewById(R.id.buttonCloseBracket);
         addTermStringToView(buttonCloseBracket, ')');
 
-        button0 = findViewById(R.id.button0);
+        Button button0 = findViewById(R.id.button0);
         addTermStringToView(button0, '0');
 
-        exportHistory = findViewById(R.id.exportHistory);
+        Button exportHistory = findViewById(R.id.exportHistory);
         exportHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonEquals = findViewById(R.id.buttonEquals);
+        Button buttonEquals = findViewById(R.id.buttonEquals);
         buttonEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "clicked =");
-                if(term.equals("")) {
+                if(term.isEmpty()) {
                     return;
                 }
                 fullEquation = term + " = ";
@@ -188,9 +150,52 @@ public class MainActivity extends AppCompatActivity {
                 term = "";
             }
         });
+
+        Button buttonDot = findViewById(R.id.buttonDot);
+        buttonDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (term.contains(".")){
+                    Log.e("Error", "Dot is already in term");
+                } else {
+                    term += ".";
+                    termView.setText(term);
+                    Log.i(TAG, "clicked and added dot");
+                }
+            }
+        });
+
+        Button buttonRemove = findViewById(R.id.buttonRemove);
+
+        buttonRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (term.length() > 1){
+                    term = term.substring(0, term.length() - 1);
+                    termView.setText(term);
+                } else {
+                    term = "";
+                    termView.setText(term);
+                }
+                Log.i(TAG, "clicked remove");
+            }
+        });
+
+        Button buttonRemoveAll = findViewById(R.id.buttonRemoveAll);
+
+        buttonRemoveAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                term = "";
+                termView.setText(term);
+                Log.i(TAG, "clicked RemoveAll");
+            }
+        });
     }
 
     private void addTextViewToScrollView(String text) {
+
+        // Adds a textview with the last result at the first position of the LinearLayout of the ScrollView.
         LinearLayout linearLayout = findViewById(R.id.historyLinearLayout);
 
         TextView textView = new TextView(this);
@@ -198,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setTextSize(50);
         textView.setPadding(20,0,0,0);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         linearLayout.addView(textView, 0);
     }
     private void addTermStringToView(Button button, Character symbol) {
@@ -248,15 +254,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.i(TAG, "Failed to export history:\n" + e);
         }
-    }
-
-    private String last5historyToString(LinkedList<String> history) {
-        StringBuilder builder = new StringBuilder(history.getFirst());
-        for (String s : history.subList(1, Math.min(5, history.size()))) {
-            builder.append("\n").append(s);
-        }
-        Log.i(TAG, "Last 5 history: " + builder);
-        return builder.toString();
     }
 
     // We have taken the implementation of the eval function from this post:

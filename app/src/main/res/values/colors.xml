@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Colors inspired by https://www.youtube.com/watch?v=2hSHgungOKI-->
 <resources>
     <color name="grey">#AAA</color>
     <color name="black">#FF000000</color>
